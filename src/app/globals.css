@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+:root {
+  --bg-main: #fafafa;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --accent: #09090b;
+  --accent-light: #27272a;
+  --accent-pale: #f4f4f5;
+  --accent-soft: #e4e4e7;
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --border: #e4e4e7;
+  --border-purple: #e4e4e7;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+}
+
+@theme inline {
+  --color-background: var(--bg-main);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Explicit hex overrides to avoid Turbopack resolution panics */
+  --color-purple-50: #fafafa;
+  --color-purple-100: #f4f4f5;
+  --color-purple-200: #e4e4e7;
+  --color-purple-300: #d4d4d8;
+  --color-purple-400: #a1a1aa;
+  --color-purple-500: #71717a;
+  --color-purple-600: #52525b;
+  --color-purple-700: #3f3f46;
+  --color-purple-800: #27272a;
+  --color-purple-900: #18181b;
+  --color-purple-950: #09090b;
+}
+
+*, ::before, ::after {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-purple);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-light);
+}
+
+/* Code editor textarea reset */
+.code-editor-textarea {
+  resize: none;
+  outline: none;
+  caret-color: #09090b;
+  font-family: var(--font-geist-mono), "Courier New", monospace;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out;
+}
+
+@keyframes progress {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite !important;
+}
