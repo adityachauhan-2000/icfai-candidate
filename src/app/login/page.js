@@ -28,7 +28,7 @@ export default function CandidateLogin() {
 
       if (res.ok) {
         // Redirect to dashboard
-        router.push("/study-plan");
+        router.push("/preparation");
       } else {
         const data = await res.json();
         setError(data.detail || "Invalid credentials");
