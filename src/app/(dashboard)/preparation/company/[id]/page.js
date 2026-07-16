@@ -16,7 +16,7 @@ export default function CompanyLandingPage({ params }) {
   useEffect(() => {
     async function fetchCompany() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/${id}`);
         if (!res.ok) throw new Error("Company not found");
         const data = await res.json();
 
@@ -34,7 +34,7 @@ export default function CompanyLandingPage({ params }) {
     }
     async function fetchSessions() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/sessions/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/sessions/${id}`, {
           credentials: "include"
         });
         if (res.ok) {

@@ -37,7 +37,7 @@ export default function CourseTopicsPage({ params }) {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/student/me/course/${code}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/student/me/course/${code}`, {
           credentials: "omit"
         });
         if (res.ok) {
@@ -45,7 +45,7 @@ export default function CourseTopicsPage({ params }) {
           setActiveCourse(data);
         } else if (res.status === 401) {
           // Retry with include for safety in case of auth need
-          const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/student/me/course/${code}`, {
+          const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/student/me/course/${code}`, {
             credentials: "include"
           });
           if (res2.ok) {
@@ -65,7 +65,7 @@ export default function CourseTopicsPage({ params }) {
   // Handler to toggle syllabus item completion status
   const handleToggleTopic = async (topicId) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/student/me/topic/${topicId}/toggle`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/student/me/topic/${topicId}/toggle`, {
         method: "POST",
         credentials: "include",
       });

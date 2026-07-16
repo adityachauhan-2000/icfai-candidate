@@ -34,7 +34,7 @@ const saveBlobToDB = (key, blob) => {
 
 const sendTerminalLog = (message) => {
   console.log(message);
-  fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/log`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/log`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message })
@@ -56,7 +56,7 @@ function RoundPageContent({ id, roundId }) {
   useEffect(() => {
     async function fetchCompanyAndQuestions() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/${id}`);
         if (!res.ok) throw new Error("Company not found");
         const data = await res.json();
         if (data.rounds) {
@@ -67,7 +67,7 @@ function RoundPageContent({ id, roundId }) {
         // Fetch student program_id
         let progId = null;
         try {
-          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
+          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
             credentials: "include"
           });
           if (stRes.ok) {
@@ -81,7 +81,7 @@ function RoundPageContent({ id, roundId }) {
         const currentRoundData = data.rounds?.find((r) => r.id === Number(roundId));
         if (currentRoundData) {
           if (currentRoundData.type === "aptitude") {
-            const qRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/rounds/${roundId}/questions`);
+            const qRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/rounds/${roundId}/questions`);
             if (qRes.ok) {
               const qData = await qRes.json();
               const parsedQuestions = qData.map(q => {
@@ -93,7 +93,7 @@ function RoundPageContent({ id, roundId }) {
               setAptitudeQuestions(parsedQuestions);
             }
           } else if (currentRoundData.type === "gd" && progId) {
-            const gdRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/gd-questions/random?program_id=${progId}`);
+            const gdRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/gd-questions/random?program_id=${progId}`);
             if (gdRes.ok) setGdQuestion(await gdRes.json());
           }
         }
@@ -441,7 +441,7 @@ function RoundPageContent({ id, roundId }) {
       mediaRecorderRef.current.start(1000);
 
       // Setup WebRTC connection via backend proxy
-      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/webrtc/session?round_type=interview`, {
+      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/webrtc/session?round_type=interview`, {
         method: "POST",
         credentials: "include"
       });
@@ -500,7 +500,7 @@ function RoundPageContent({ id, roundId }) {
       await pc.setLocalDescription(offer);
       sendTerminalLog("📡 Local Description set. Sending SDP to backend proxy...");
 
-      const sdpResp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/webrtc/sdp`, {
+      const sdpResp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/webrtc/sdp`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${client_secret}`,

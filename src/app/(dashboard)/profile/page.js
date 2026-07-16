@@ -26,7 +26,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
           credentials: "include",
         });
         if (res.ok) {
@@ -35,7 +35,7 @@ export default function ProfilePage() {
           setName(data.name);
 
           if (data.program_id) {
-            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/programs/${data.program_id}`);
+            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/programs/${data.program_id}`);
             if (progRes.ok) {
               const progData = await progRes.json();
               setProgramName(progData.name);
@@ -57,7 +57,7 @@ export default function ProfilePage() {
     e.preventDefault();
     setNameSuccess("");
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -79,7 +79,7 @@ export default function ProfilePage() {
     setPasswordSuccess("");
     setPasswordError("");
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me/password`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me/password`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -107,7 +107,7 @@ export default function ProfilePage() {
     formData.append("file", file);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me/upload-image`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me/upload-image`, {
         method: "POST",
         credentials: "include",
         body: formData,

@@ -35,7 +35,7 @@ export default function AnalysisPage({ params }) {
   useEffect(() => {
     async function fetchCompany() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/${id}`);
         if (res.ok) setCompany(await res.json());
       } catch (e) { }
     }
@@ -46,7 +46,7 @@ export default function AnalysisPage({ params }) {
     async function processAnalysis() {
       try {
         if (sessionId) {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/sessions/detail/${sessionId}`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/sessions/detail/${sessionId}`, {
             credentials: "include"
           });
           if (res.ok) {
@@ -63,7 +63,7 @@ export default function AnalysisPage({ params }) {
         if (!storedAnswersStr) {
           // If no current session answers exist, fetch the latest completed session
           try {
-            const sessionsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/sessions/${id}`, {
+            const sessionsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/sessions/${id}`, {
               credentials: "include"
             });
             if (sessionsRes.ok) {
@@ -106,7 +106,7 @@ export default function AnalysisPage({ params }) {
 
         let activeStudentId = 1;
         try {
-          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
+          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
             credentials: "include"
           });
           if (stRes.ok) {
@@ -126,7 +126,7 @@ export default function AnalysisPage({ params }) {
         if (gdAudioBlob) formData.append("gd_audio", gdAudioBlob, "gd_audio.webm");
         if (interviewVideoBlob) formData.append("interview_video", interviewVideoBlob, "interview_video.webm");
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/analyze-interview`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/analyze-interview`, {
           method: "POST",
           credentials: "include",
           body: formData,

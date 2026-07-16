@@ -13,7 +13,7 @@ export default function DailyNewPage() {
     async function fetchNews() {
       setLoading(true);
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/news?category=${activeTab}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/news?category=${activeTab}`);
         if (res.ok) {
           const data = await res.json();
           setNewsList(data);

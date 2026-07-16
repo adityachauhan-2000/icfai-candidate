@@ -284,7 +284,7 @@ export default function StudyPlanPage() {
   useEffect(() => {
     const fetchStudyPlan = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/student/me/study-plan`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/student/me/study-plan`, {
           credentials: "include",
         });
         if (res.ok) {
@@ -300,13 +300,13 @@ export default function StudyPlanPage() {
 
     const fetchProgramName = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
           credentials: "include",
         });
         if (res.ok) {
           const data = await res.json();
           if (data.program_id) {
-            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/programs/${data.program_id}`);
+            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/programs/${data.program_id}`);
             if (progRes.ok) {
               const progData = await progRes.json();
               setProgramName(progData.name);
@@ -401,8 +401,8 @@ export default function StudyPlanPage() {
                         key={item.code}
                         href={`/study-plan/${item.code}`}
                         className={`flex flex-wrap items-center justify-between gap-y-3 gap-x-4 p-4 rounded-xl border transition-all hover:bg-zinc-100/30 hover:border-zinc-300 text-left w-full cursor-pointer ${isToday
-                            ? "bg-purple-50/40 border-purple-200 shadow-xs"
-                            : "bg-[#f9f9f9] border-zinc-200/80 shadow-xs"
+                          ? "bg-purple-50/40 border-purple-200 shadow-xs"
+                          : "bg-[#f9f9f9] border-zinc-200/80 shadow-xs"
                           }`}
                       >
                         {/* Left: Code Tag & Course Title info */}
@@ -410,8 +410,8 @@ export default function StudyPlanPage() {
                           {/* Course Code Tag */}
                           <span
                             className={`font-mono text-[11px] font-bold px-2.5 py-1.5 rounded-lg border shrink-0 text-center min-w-[76px] ${isToday
-                                ? "bg-zinc-900 text-white border-zinc-900"
-                                : "bg-white text-zinc-600 border-zinc-200/60"
+                              ? "bg-zinc-900 text-white border-zinc-900"
+                              : "bg-white text-zinc-600 border-zinc-200/60"
                               }`}
                           >
                             {item.code}
