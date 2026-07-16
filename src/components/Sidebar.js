@@ -70,7 +70,7 @@ export default function Sidebar({ user }) {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/logout`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -139,7 +139,7 @@ export default function Sidebar({ user }) {
                     }
                   }
                   keysToRemove.forEach(k => localStorage.removeItem(k));
-                } catch (e) {}
+                } catch (e) { }
               }}
               style={{
                 background: active ? "var(--accent)" : "transparent",

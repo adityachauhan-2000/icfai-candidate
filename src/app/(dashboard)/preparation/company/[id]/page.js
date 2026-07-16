@@ -7,7 +7,7 @@ import CompanyRoundsList from "@/components/CompanyRoundsList";
 
 export default function CompanyLandingPage({ params }) {
   const { id } = use(params);
-  
+
   const [config, setConfig] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,15 +16,15 @@ export default function CompanyLandingPage({ params }) {
   useEffect(() => {
     async function fetchCompany() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/companies/${id}`);
         if (!res.ok) throw new Error("Company not found");
         const data = await res.json();
-        
+
         // Ensure rounds are sorted by order_index
         if (data.rounds) {
           data.rounds.sort((a, b) => a.order_index - b.order_index);
         }
-        
+
         setConfig(data);
       } catch (err) {
         setError(err.message);
@@ -34,13 +34,13 @@ export default function CompanyLandingPage({ params }) {
     }
     async function fetchSessions() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/sessions/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/sessions/${id}`, {
           credentials: "include"
         });
         if (res.ok) {
           setSessions(await res.json());
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     fetchCompany();
     fetchSessions();

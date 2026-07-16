@@ -284,7 +284,7 @@ export default function StudyPlanPage() {
   useEffect(() => {
     const fetchStudyPlan = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/student/me/study-plan`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/student/me/study-plan`, {
           credentials: "include",
         });
         if (res.ok) {
@@ -297,16 +297,16 @@ export default function StudyPlanPage() {
         setLoading(false);
       }
     };
-    
+
     const fetchProgramName = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/student/me`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
           credentials: "include",
         });
         if (res.ok) {
           const data = await res.json();
           if (data.program_id) {
-            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/programs/${data.program_id}`);
+            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/programs/${data.program_id}`);
             if (progRes.ok) {
               const progData = await progRes.json();
               setProgramName(progData.name);
@@ -317,7 +317,7 @@ export default function StudyPlanPage() {
         console.error("Failed to fetch program", err);
       }
     };
-    
+
     fetchStudyPlan();
     fetchProgramName();
   }, []);
@@ -399,69 +399,67 @@ export default function StudyPlanPage() {
                     return (
                       <Link
                         key={item.code}
-                      href={`/study-plan/${item.code}`}
-                      className={`flex flex-wrap items-center justify-between gap-y-3 gap-x-4 p-4 rounded-xl border transition-all hover:bg-zinc-100/30 hover:border-zinc-300 text-left w-full cursor-pointer ${
-                        isToday
-                          ? "bg-purple-50/40 border-purple-200 shadow-xs"
-                          : "bg-[#f9f9f9] border-zinc-200/80 shadow-xs"
-                      }`}
-                    >
-                      {/* Left: Code Tag & Course Title info */}
-                      <div className="flex items-center gap-3 min-w-[200px] flex-1">
-                        {/* Course Code Tag */}
-                        <span
-                          className={`font-mono text-[11px] font-bold px-2.5 py-1.5 rounded-lg border shrink-0 text-center min-w-[76px] ${
-                            isToday
-                              ? "bg-zinc-900 text-white border-zinc-900"
-                              : "bg-white text-zinc-600 border-zinc-200/60"
+                        href={`/study-plan/${item.code}`}
+                        className={`flex flex-wrap items-center justify-between gap-y-3 gap-x-4 p-4 rounded-xl border transition-all hover:bg-zinc-100/30 hover:border-zinc-300 text-left w-full cursor-pointer ${isToday
+                            ? "bg-purple-50/40 border-purple-200 shadow-xs"
+                            : "bg-[#f9f9f9] border-zinc-200/80 shadow-xs"
                           }`}
-                        >
-                          {item.code}
-                        </span>
+                      >
+                        {/* Left: Code Tag & Course Title info */}
+                        <div className="flex items-center gap-3 min-w-[200px] flex-1">
+                          {/* Course Code Tag */}
+                          <span
+                            className={`font-mono text-[11px] font-bold px-2.5 py-1.5 rounded-lg border shrink-0 text-center min-w-[76px] ${isToday
+                                ? "bg-zinc-900 text-white border-zinc-900"
+                                : "bg-white text-zinc-600 border-zinc-200/60"
+                              }`}
+                          >
+                            {item.code}
+                          </span>
 
-                        {/* Title and Stream */}
-                        <div className="min-w-0">
-                          <h3 className="text-sm font-semibold text-zinc-900 truncate">
-                            {item.title}
-                          </h3>
-                          <p className="text-xs text-zinc-400 font-medium mt-0.5">
-                            {item.subject}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Right: Progress Bar & Status Pill */}
-                      <div className="flex items-center gap-3 shrink-0 ml-auto">
-                        {/* Minimal Progress Bar */}
-                        <div className="flex items-center gap-2">
-                          <div className="w-16 h-1.5 bg-zinc-200/60 rounded-full overflow-hidden shrink-0">
-                            <div
-                              className="h-full rounded-full transition-all duration-300"
-                              style={{
-                                width: `${item.progress}%`,
-                                background:
-                                  item.status === "completed"
-                                    ? "var(--success)"
-                                    : "var(--accent)",
-                              }}
-                            />
+                          {/* Title and Stream */}
+                          <div className="min-w-0">
+                            <h3 className="text-sm font-semibold text-zinc-900 truncate">
+                              {item.title}
+                            </h3>
+                            <p className="text-xs text-zinc-400 font-medium mt-0.5">
+                              {item.subject}
+                            </p>
                           </div>
-                          <span className="text-[10px] font-bold text-zinc-500 w-8 text-right">
-                            {item.progress}%
+                        </div>
+
+                        {/* Right: Progress Bar & Status Pill */}
+                        <div className="flex items-center gap-3 shrink-0 ml-auto">
+                          {/* Minimal Progress Bar */}
+                          <div className="flex items-center gap-2">
+                            <div className="w-16 h-1.5 bg-zinc-200/60 rounded-full overflow-hidden shrink-0">
+                              <div
+                                className="h-full rounded-full transition-all duration-300"
+                                style={{
+                                  width: `${item.progress}%`,
+                                  background:
+                                    item.status === "completed"
+                                      ? "var(--success)"
+                                      : "var(--accent)",
+                                }}
+                              />
+                            </div>
+                            <span className="text-[10px] font-bold text-zinc-500 w-8 text-right">
+                              {item.progress}%
+                            </span>
+                          </div>
+
+                          {/* Status Label */}
+                          <span
+                            className="text-xs font-semibold px-3 py-1 rounded-full text-center min-w-[80px]"
+                            style={{ background: sc.bg, color: sc.color }}
+                          >
+                            {sc.label}
                           </span>
                         </div>
-
-                        {/* Status Label */}
-                        <span
-                          className="text-xs font-semibold px-3 py-1 rounded-full text-center min-w-[80px]"
-                          style={{ background: sc.bg, color: sc.color }}
-                        >
-                          {sc.label}
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                }))}
+                      </Link>
+                    );
+                  }))}
               </div>
             </div>
           </div>

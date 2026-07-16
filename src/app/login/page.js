@@ -17,7 +17,7 @@ export default function CandidateLogin() {
     setError("");
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/login`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,9 +49,9 @@ export default function CandidateLogin() {
       <div className="w-full max-w-md p-8 bg-white/70 backdrop-blur-xl border rounded-3xl shadow-xl z-10 animate-fade-in" style={{ borderColor: "var(--border)" }}>
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
-            <img 
-              src="https://www.ibsindia.org/wp-content/uploads/2017/08/ibs_logo.png" 
-              alt="IBS Logo" 
+            <img
+              src="https://www.ibsindia.org/wp-content/uploads/2017/08/ibs_logo.png"
+              alt="IBS Logo"
               className="h-12 w-auto object-contain drop-shadow-sm"
             />
           </div>

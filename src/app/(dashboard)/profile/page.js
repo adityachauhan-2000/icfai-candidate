@@ -12,13 +12,13 @@ export default function ProfilePage() {
   const [name, setName] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  
+
   // Feedback states
   const [nameSuccess, setNameSuccess] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
-  
+
   const fileInputRef = useRef(null);
 
   const [programName, setProgramName] = useState(null);
@@ -26,16 +26,16 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/student/me`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
           credentials: "include",
         });
         if (res.ok) {
           const data = await res.json();
           setStudent(data);
           setName(data.name);
-          
+
           if (data.program_id) {
-            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/programs/${data.program_id}`);
+            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/programs/${data.program_id}`);
             if (progRes.ok) {
               const progData = await progRes.json();
               setProgramName(progData.name);
@@ -57,7 +57,7 @@ export default function ProfilePage() {
     e.preventDefault();
     setNameSuccess("");
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/student/me`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -79,7 +79,7 @@ export default function ProfilePage() {
     setPasswordSuccess("");
     setPasswordError("");
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/student/me/password`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me/password`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -107,7 +107,7 @@ export default function ProfilePage() {
     formData.append("file", file);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/student/me/upload-image`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me/upload-image`, {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -135,13 +135,13 @@ export default function ProfilePage() {
   return (
     <div className="max-w-4xl mx-auto py-10">
       <h1 className="text-3xl font-black mb-8 tracking-tight text-zinc-900">Student Profile</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
+
         {/* Left Column: Avatar & Basic Info */}
         <div className="md:col-span-1">
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-zinc-200 text-center flex flex-col items-center">
-            
+
             <div className="relative group cursor-pointer mb-6" onClick={() => fileInputRef.current?.click()}>
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-zinc-100 shadow-sm relative flex items-center justify-center bg-zinc-100">
                 {student.profile_image ? (
@@ -149,7 +149,7 @@ export default function ProfilePage() {
                 ) : (
                   <span className="text-4xl font-bold text-zinc-400 uppercase">{student.name.charAt(0)}</span>
                 )}
-                
+
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   {imageUploading ? (
@@ -165,12 +165,12 @@ export default function ProfilePage() {
                   )}
                 </div>
               </div>
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleImageUpload} 
-                accept="image/*" 
-                className="hidden" 
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/*"
+                className="hidden"
               />
             </div>
 
@@ -184,7 +184,7 @@ export default function ProfilePage() {
 
         {/* Right Column: Forms */}
         <div className="md:col-span-2 space-y-6">
-          
+
           {/* General Information */}
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-zinc-200">
             <h3 className="text-lg font-bold text-zinc-900 mb-6">General Information</h3>
@@ -199,7 +199,7 @@ export default function ProfilePage() {
                   className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium text-zinc-900"
                 />
               </div>
-              
+
               {nameSuccess && (
                 <div className="mb-4 p-3 bg-green-50 text-green-700 rounded-lg text-sm font-medium border border-green-100">
                   {nameSuccess}

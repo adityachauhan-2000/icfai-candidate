@@ -34,11 +34,11 @@ const saveBlobToDB = (key, blob) => {
 
 const sendTerminalLog = (message) => {
   console.log(message);
-  fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/log`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/log`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message })
-  }).catch(() => {});
+  }).catch(() => { });
 };
 
 function RoundPageContent({ id, roundId }) {
@@ -56,18 +56,18 @@ function RoundPageContent({ id, roundId }) {
   useEffect(() => {
     async function fetchCompanyAndQuestions() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/companies/${id}`);
         if (!res.ok) throw new Error("Company not found");
         const data = await res.json();
         if (data.rounds) {
           data.rounds.sort((a, b) => a.order_index - b.order_index);
         }
         setConfig(data);
-        
+
         // Fetch student program_id
         let progId = null;
         try {
-          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/student/me`, {
+          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
             credentials: "include"
           });
           if (stRes.ok) {
@@ -81,19 +81,19 @@ function RoundPageContent({ id, roundId }) {
         const currentRoundData = data.rounds?.find((r) => r.id === Number(roundId));
         if (currentRoundData) {
           if (currentRoundData.type === "aptitude") {
-            const qRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/rounds/${roundId}/questions`);
+            const qRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/rounds/${roundId}/questions`);
             if (qRes.ok) {
               const qData = await qRes.json();
               const parsedQuestions = qData.map(q => {
-                 if (typeof q.options === 'string') {
-                     try { q.options = JSON.parse(q.options); } catch(e) {}
-                 }
-                 return q;
+                if (typeof q.options === 'string') {
+                  try { q.options = JSON.parse(q.options); } catch (e) { }
+                }
+                return q;
               });
               setAptitudeQuestions(parsedQuestions);
             }
           } else if (currentRoundData.type === "gd" && progId) {
-            const gdRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/gd-questions/random?program_id=${progId}`);
+            const gdRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/gd-questions/random?program_id=${progId}`);
             if (gdRes.ok) setGdQuestion(await gdRes.json());
           }
         }
@@ -153,7 +153,7 @@ function RoundPageContent({ id, roundId }) {
         pcRef.current.close();
       }
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-        try { mediaRecorderRef.current.stop(); } catch(e) {}
+        try { mediaRecorderRef.current.stop(); } catch (e) { }
       }
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
@@ -334,21 +334,21 @@ function RoundPageContent({ id, roundId }) {
       let wrongCount = 0;
       const details = [];
       Object.entries(updatedAptAnswers).forEach(([idx, opt]) => {
-         const q = aptitudeQuestions[idx];
-         if (q) {
-             const is_correct = q.options[q.answer] === opt;
-             if (is_correct) {
-                correctCount++;
-             } else {
-                wrongCount++;
-             }
-             details.push({
-                 question: q.q,
-                 selected_option: opt,
-                 correct_option: q.options[q.answer],
-                 is_correct: is_correct
-             });
-         }
+        const q = aptitudeQuestions[idx];
+        if (q) {
+          const is_correct = q.options[q.answer] === opt;
+          if (is_correct) {
+            correctCount++;
+          } else {
+            wrongCount++;
+          }
+          details.push({
+            question: q.q,
+            selected_option: opt,
+            correct_option: q.options[q.answer],
+            is_correct: is_correct
+          });
+        }
       });
       const score = { correct: correctCount, wrong: wrongCount, total: aptitudeQuestions.length || 10, attempted: Object.keys(updatedAptAnswers).length, details };
 
@@ -396,30 +396,30 @@ function RoundPageContent({ id, roundId }) {
 
   const handleSkip = () => {
     const newAnswers = { ...answers };
-    
+
     if (currentRound?.type === "aptitude") {
       // If skipping aptitude, grade what they have answered so far
       let correctCount = 0;
       let wrongCount = 0;
       const details = [];
       Object.entries(aptAnswers).forEach(([idx, opt]) => {
-         const q = aptitudeQuestions[idx];
-         if (q) {
-             const is_correct = q.options[q.answer] === opt;
-             if (is_correct) correctCount++;
-             else wrongCount++;
-             details.push({
-                 question: q.q,
-                 selected_option: opt,
-                 correct_option: q.options[q.answer],
-                 is_correct: is_correct
-             });
-         }
+        const q = aptitudeQuestions[idx];
+        if (q) {
+          const is_correct = q.options[q.answer] === opt;
+          if (is_correct) correctCount++;
+          else wrongCount++;
+          details.push({
+            question: q.q,
+            selected_option: opt,
+            correct_option: q.options[q.answer],
+            is_correct: is_correct
+          });
+        }
       });
       const score = { correct: correctCount, wrong: wrongCount, total: aptitudeQuestions.length || 10, attempted: Object.keys(aptAnswers).length, details };
       newAnswers[roundId] = JSON.stringify({ answers: aptAnswers, score });
     }
-    
+
     const newSkipped = { ...skippedRounds, [roundId]: true };
     saveStateAndNavigate(newAnswers, newSkipped);
   };
@@ -431,7 +431,7 @@ function RoundPageContent({ id, roundId }) {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       streamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
-      
+
       // Record locally for analysis transcript and video
       recordedChunksRef.current = [];
       mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: 'video/webm' });
@@ -439,21 +439,21 @@ function RoundPageContent({ id, roundId }) {
         if (e.data.size > 0) recordedChunksRef.current.push(e.data);
       };
       mediaRecorderRef.current.start(1000);
-      
+
       // Setup WebRTC connection via backend proxy
-      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/webrtc/session?round_type=interview`, {
+      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/webrtc/session?round_type=interview`, {
         method: "POST",
         credentials: "include"
       });
       const data = await resp.json();
       const client_secret = data.value || (data.client_secret && data.client_secret.value);
       sendTerminalLog("🔑 WebRTC Session fetched from backend proxy. Client Secret obtained.");
-      
+
       if (!client_secret) throw new Error("No client secret in response");
-      
+
       const pc = new RTCPeerConnection();
       pcRef.current = pc;
-      
+
       const dc = pc.createDataChannel("oai-events");
       dc.addEventListener("open", () => {
         sendTerminalLog("💬 WebRTC Data Channel Opened");
@@ -483,24 +483,24 @@ function RoundPageContent({ id, roundId }) {
             } else if (event.type === "response.audio_transcript.done") {
               sendTerminalLog(`🤖 AI: "${event.transcript || ""}"`);
             }
-          } catch(err) {}
+          } catch (err) { }
         });
       };
-      
+
       pc.ontrack = (e) => {
         const aiAudio = new Audio();
         aiAudio.srcObject = e.streams[0];
         aiAudio.play();
       };
-      
+
       stream.getTracks().forEach(track => pc.addTrack(track, stream));
-      
+
       sendTerminalLog("📝 Creating WebRTC Offer...");
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
       sendTerminalLog("📡 Local Description set. Sending SDP to backend proxy...");
-      
-      const sdpResp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/webrtc/sdp`, {
+
+      const sdpResp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/webrtc/sdp`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${client_secret}`,
@@ -512,7 +512,7 @@ function RoundPageContent({ id, roundId }) {
       const answerSdp = await sdpResp.text();
       await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
       sendTerminalLog("✅ Received SDP Answer. WebRTC Handshake Complete!");
-    } catch(err) {
+    } catch (err) {
       console.error("WebRTC Error", err);
       sendTerminalLog(`❌ WebRTC Error: ${err.message}`);
     }
@@ -523,7 +523,7 @@ function RoundPageContent({ id, roundId }) {
       pcRef.current.close();
       sendTerminalLog("🔌 WebRTC Connection Closed.");
     }
-    
+
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       await new Promise(resolve => {
         mediaRecorderRef.current.onstop = async () => {
@@ -543,7 +543,7 @@ function RoundPageContent({ id, roundId }) {
     if (videoRef.current && videoRef.current.srcObject) {
       videoRef.current.srcObject.getTracks().forEach(track => track.stop());
     }
-    
+
     setAnswers((prev) => {
       const nextAnswers = {
         ...prev,
@@ -565,14 +565,14 @@ function RoundPageContent({ id, roundId }) {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
       streamRef.current = stream;
-      
+
       recordedChunksRef.current = [];
       mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: 'audio/webm' });
       mediaRecorderRef.current.ondataavailable = (e) => {
         if (e.data.size > 0) recordedChunksRef.current.push(e.data);
       };
       mediaRecorderRef.current.start(1000);
-    } catch(err) {
+    } catch (err) {
       console.error("GD Audio Error", err);
     }
   };
@@ -1024,17 +1024,17 @@ function RoundPageContent({ id, roundId }) {
                   <button
                     type="button"
                     onClick={() => {
-                        const newPausedState = !isTimerPaused;
-                        setIsTimerPaused(newPausedState);
-                        if (mediaRecorderRef.current) {
-                            if (newPausedState && mediaRecorderRef.current.state === "recording") {
-                                mediaRecorderRef.current.pause();
-                                sendTerminalLog("⏸️ WebRTC MediaRecorder Paused");
-                            } else if (!newPausedState && mediaRecorderRef.current.state === "paused") {
-                                mediaRecorderRef.current.resume();
-                                sendTerminalLog("▶️ WebRTC MediaRecorder Resumed");
-                            }
+                      const newPausedState = !isTimerPaused;
+                      setIsTimerPaused(newPausedState);
+                      if (mediaRecorderRef.current) {
+                        if (newPausedState && mediaRecorderRef.current.state === "recording") {
+                          mediaRecorderRef.current.pause();
+                          sendTerminalLog("⏸️ WebRTC MediaRecorder Paused");
+                        } else if (!newPausedState && mediaRecorderRef.current.state === "paused") {
+                          mediaRecorderRef.current.resume();
+                          sendTerminalLog("▶️ WebRTC MediaRecorder Resumed");
                         }
+                      }
                     }}
                     className="px-6 py-3 bg-zinc-800 text-white rounded-xl text-xs font-bold hover:bg-zinc-700 cursor-pointer shadow-md hover:scale-[1.02] transition-all"
                   >
@@ -1049,7 +1049,7 @@ function RoundPageContent({ id, roundId }) {
                     Done
                   </button>
                 </div>
-                
+
 
               </div>
             )}

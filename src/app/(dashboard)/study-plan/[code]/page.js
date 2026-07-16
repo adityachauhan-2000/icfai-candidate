@@ -37,7 +37,7 @@ export default function CourseTopicsPage({ params }) {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/student/me/course/${code}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/student/me/course/${code}`, {
           credentials: "omit"
         });
         if (res.ok) {
@@ -45,7 +45,7 @@ export default function CourseTopicsPage({ params }) {
           setActiveCourse(data);
         } else if (res.status === 401) {
           // Retry with include for safety in case of auth need
-          const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/student/me/course/${code}`, {
+          const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/student/me/course/${code}`, {
             credentials: "include"
           });
           if (res2.ok) {
@@ -65,20 +65,20 @@ export default function CourseTopicsPage({ params }) {
   // Handler to toggle syllabus item completion status
   const handleToggleTopic = async (topicId) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/student/me/topic/${topicId}/toggle`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/student/me/topic/${topicId}/toggle`, {
         method: "POST",
         credentials: "include",
       });
       if (res.ok) {
         const data = await res.json();
-        
+
         // Update local state without refetching the whole thing to feel snappy
         setActiveCourse((prev) => {
           if (!prev) return prev;
           return {
             ...prev,
             progress: data.new_progress,
-            topics: prev.topics.map(t => 
+            topics: prev.topics.map(t =>
               t.id === topicId ? { ...t, is_completed: data.is_completed } : t
             )
           };
@@ -94,7 +94,7 @@ export default function CourseTopicsPage({ params }) {
   if (loading) {
     return <div className="p-8 text-center text-sm font-medium text-zinc-500">Loading course...</div>;
   }
-  
+
   if (!activeCourse) {
     return <div className="p-8 text-center text-sm font-medium text-red-500">Course not found.</div>;
   }
@@ -132,7 +132,7 @@ export default function CourseTopicsPage({ params }) {
 
     try {
       const replyText = await fetchChatCompletion(userQuery);
-      
+
       setChatMessages((prev) => [...prev, { sender: "ai", text: replyText }]);
     } catch (error) {
       console.error("Chat error:", error);
@@ -189,8 +189,8 @@ export default function CourseTopicsPage({ params }) {
           >
             <div
               className={`p-3 rounded-2xl max-w-[85%] leading-relaxed ${msg.sender === "user"
-                  ? "bg-zinc-900 text-white rounded-tr-none"
-                  : "bg-zinc-100 text-zinc-800 rounded-tl-none border border-zinc-200/50"
+                ? "bg-zinc-900 text-white rounded-tr-none"
+                : "bg-zinc-100 text-zinc-800 rounded-tl-none border border-zinc-200/50"
                 }`}
             >
               {typeof msg.text === "string" && msg.text.includes("###") ? (
@@ -358,8 +358,8 @@ export default function CourseTopicsPage({ params }) {
                       <div
                         key={topic.id}
                         className={`flex items-center justify-between gap-4 p-3 rounded-xl border transition-all ${isCompleted
-                            ? "bg-zinc-50/50 border-zinc-200/50"
-                            : "bg-[#f9f9f9] border-zinc-200/80 hover:border-zinc-300"
+                          ? "bg-zinc-50/50 border-zinc-200/50"
+                          : "bg-[#f9f9f9] border-zinc-200/80 hover:border-zinc-300"
                           }`}
                       >
                         <button
@@ -370,8 +370,8 @@ export default function CourseTopicsPage({ params }) {
                           {/* Checkbox Icon */}
                           <div
                             className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 border transition-all mt-0.5 ${isCompleted
-                                ? "bg-emerald-500 border-emerald-500 text-white"
-                                : "border-zinc-300 bg-white"
+                              ? "bg-emerald-500 border-emerald-500 text-white"
+                              : "border-zinc-300 bg-white"
                               }`}
                           >
                             {isCompleted && (
@@ -396,8 +396,8 @@ export default function CourseTopicsPage({ params }) {
                             </span>
                             <span
                               className={`text-sm font-semibold leading-snug break-words ${isCompleted
-                                  ? "line-through text-zinc-400"
-                                  : "text-zinc-800"
+                                ? "line-through text-zinc-400"
+                                : "text-zinc-800"
                                 }`}
                             >
                               {topic.name}

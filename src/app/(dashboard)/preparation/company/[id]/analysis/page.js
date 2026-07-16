@@ -35,9 +35,9 @@ export default function AnalysisPage({ params }) {
   useEffect(() => {
     async function fetchCompany() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/companies/${id}`);
         if (res.ok) setCompany(await res.json());
-      } catch (e) {}
+      } catch (e) { }
     }
     fetchCompany();
   }, [id]);
@@ -46,7 +46,7 @@ export default function AnalysisPage({ params }) {
     async function processAnalysis() {
       try {
         if (sessionId) {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/sessions/detail/${sessionId}`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/sessions/detail/${sessionId}`, {
             credentials: "include"
           });
           if (res.ok) {
@@ -59,11 +59,11 @@ export default function AnalysisPage({ params }) {
         }
 
         const storedAnswersStr = localStorage.getItem(`answers_${id}`);
-        
+
         if (!storedAnswersStr) {
           // If no current session answers exist, fetch the latest completed session
           try {
-            const sessionsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/sessions/${id}`, {
+            const sessionsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/sessions/${id}`, {
               credentials: "include"
             });
             if (sessionsRes.ok) {
@@ -80,25 +80,25 @@ export default function AnalysisPage({ params }) {
           router.replace(`/preparation/company/${id}`);
           return;
         }
-        
+
         const storedAnswers = JSON.parse(storedAnswersStr);
-        
+
         let aptitudeScoreStr = "{}";
         let gdQuestion = "";
         let interviewQuestion = "";
         Object.keys(storedAnswers).forEach(key => {
-            try {
-                const parsed = JSON.parse(storedAnswers[key]);
-                if (parsed.score) {
-                    aptitudeScoreStr = JSON.stringify(parsed.score);
-                }
-                if (parsed.type === "gd") {
-                    gdQuestion = parsed.question || "";
-                }
-                if (parsed.type === "interview") {
-                    interviewQuestion = parsed.question || "";
-                }
-            } catch(e) {}
+          try {
+            const parsed = JSON.parse(storedAnswers[key]);
+            if (parsed.score) {
+              aptitudeScoreStr = JSON.stringify(parsed.score);
+            }
+            if (parsed.type === "gd") {
+              gdQuestion = parsed.question || "";
+            }
+            if (parsed.type === "interview") {
+              interviewQuestion = parsed.question || "";
+            }
+          } catch (e) { }
         });
 
         const gdAudioBlob = await getBlobFromDB(`gd_audio_${id}`);
@@ -106,7 +106,7 @@ export default function AnalysisPage({ params }) {
 
         let activeStudentId = 1;
         try {
-          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/student/me`, {
+          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/auth/student/me`, {
             credentials: "include"
           });
           if (stRes.ok) {
@@ -126,7 +126,7 @@ export default function AnalysisPage({ params }) {
         if (gdAudioBlob) formData.append("gd_audio", gdAudioBlob, "gd_audio.webm");
         if (interviewVideoBlob) formData.append("interview_video", interviewVideoBlob, "interview_video.webm");
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/analyze-interview`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/analyze-interview`, {
           method: "POST",
           credentials: "include",
           body: formData,
@@ -135,12 +135,12 @@ export default function AnalysisPage({ params }) {
         if (res.ok) {
           const data = await res.json();
           setAnalysisResult(data);
-          
+
           try {
             localStorage.removeItem(`answers_${id}`);
             localStorage.removeItem(`skipped_${id}`);
-          } catch(e) {}
-          
+          } catch (e) { }
+
           router.replace(`/preparation/company/${id}/analysis?session=${data.id}`);
         } else {
           setAnalysisResult({ error: "Failed to fetch analysis" });
@@ -159,7 +159,7 @@ export default function AnalysisPage({ params }) {
     try {
       localStorage.removeItem(`answers_${id}`);
       localStorage.removeItem(`skipped_${id}`);
-    } catch (e) {}
+    } catch (e) { }
     router.push("/preparation");
   };
 
@@ -179,14 +179,14 @@ export default function AnalysisPage({ params }) {
             </div>
           </div>
         </div>
-        
+
         <h3 className="mt-8 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-zinc-800 to-zinc-500 animate-pulse">
           Analyzing Your Interview
         </h3>
         <p className="mt-3 text-sm text-zinc-500 max-w-sm text-center leading-relaxed">
           Our AI is evaluating your responses, processing speech patterns, and generating personalized feedback. This usually takes a minute.
         </p>
-        
+
         <div className="mt-8 w-64 h-1.5 bg-zinc-100 rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 w-1/2 animate-[progress_2s_ease-in-out_infinite_alternate] rounded-full"></div>
         </div>

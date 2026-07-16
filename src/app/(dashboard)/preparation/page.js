@@ -12,7 +12,7 @@ export default function PreparationPage() {
   useEffect(() => {
     async function fetchCompanies() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/preparation/companies`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-7saqfpox9-adityas-projects-4b60fae5.vercel.app"}/api/preparation/companies`);
         if (!res.ok) throw new Error("Failed to load companies");
         const data = await res.json();
         setCompanies(data);
