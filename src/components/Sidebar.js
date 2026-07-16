@@ -16,47 +16,47 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: <LayoutDashboard className="w-[18px] h-[18px]" strokeWidth={2} />,
-  },
-  {
-    label: "Daily News",
-    href: "/daily-news",
-    icon: <Newspaper className="w-[18px] h-[18px]" strokeWidth={2} />,
-  },
-  {
-    label: "Study Plan",
-    href: "/study-plan",
-    icon: <BookOpen className="w-[18px] h-[18px]" strokeWidth={2} />,
-  },
-  {
-    label: "Case Studies",
-    href: "/case-studies",
-    icon: <Video className="w-[18px] h-[18px]" strokeWidth={2} />,
-  },
+  // {
+  //   label: "Dashboard",
+  //   href: "/dashboard",
+  //   icon: <LayoutDashboard className="w-[18px] h-[18px]" strokeWidth={2} />,
+  // },
+  // {
+  //   label: "Daily News",
+  //   href: "/daily-news",
+  //   icon: <Newspaper className="w-[18px] h-[18px]" strokeWidth={2} />,
+  // },
+  // {
+  //   label: "Study Plan",
+  //   href: "/study-plan",
+  //   icon: <BookOpen className="w-[18px] h-[18px]" strokeWidth={2} />,
+  // },
+  // {
+  //   label: "Case Studies",
+  //   href: "/case-studies",
+  //   icon: <Video className="w-[18px] h-[18px]" strokeWidth={2} />,
+  // },
 
   {
     label: "Preparation",
     href: "/preparation",
     icon: <Target className="w-[18px] h-[18px]" strokeWidth={2} />,
   },
-  {
-    label: "Collaboration Zone",
-    href: "/collaboration-zone",
-    icon: <Users className="w-[18px] h-[18px]" strokeWidth={2} />,
-  },
-  {
-    label: "Assessments",
-    href: "/assessments",
-    icon: <ClipboardList className="w-[18px] h-[18px]" strokeWidth={2} />,
-  },
-  {
-    label: "Leaderboard",
-    href: "/leaderboard",
-    icon: <Trophy className="w-[18px] h-[18px]" strokeWidth={2} />,
-  },
+  // {
+  //   label: "Collaboration Zone",
+  //   href: "/collaboration-zone",
+  //   icon: <Users className="w-[18px] h-[18px]" strokeWidth={2} />,
+  // },
+  // {
+  //   label: "Assessments",
+  //   href: "/assessments",
+  //   icon: <ClipboardList className="w-[18px] h-[18px]" strokeWidth={2} />,
+  // },
+  // {
+  //   label: "Leaderboard",
+  //   href: "/leaderboard",
+  //   icon: <Trophy className="w-[18px] h-[18px]" strokeWidth={2} />,
+  // },
   {
     label: "Profile",
     href: "/profile",
