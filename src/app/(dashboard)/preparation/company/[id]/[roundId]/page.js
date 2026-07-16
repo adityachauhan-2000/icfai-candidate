@@ -131,6 +131,7 @@ function RoundPageContent({ id, roundId }) {
   const [audioPhase, setAudioPhase] = useState("ready"); // ready | recording | feedback
   const [recordingTime, setRecordingTime] = useState(0);
   const [wavePhase, setWavePhase] = useState(0);
+  const [isWebRTCConnected, setIsWebRTCConnected] = useState(false);
 
   const streamRef = useRef(null);
 
@@ -457,6 +458,14 @@ function RoundPageContent({ id, roundId }) {
       const dc = pc.createDataChannel("oai-events");
       dc.addEventListener("open", () => {
         sendTerminalLog("💬 WebRTC Data Channel Opened");
+      });
+      
+      pc.addEventListener("connectionstatechange", () => {
+        if (pc.connectionState === "connected") {
+          setIsWebRTCConnected(true);
+        } else if (pc.connectionState === "disconnected" || pc.connectionState === "failed" || pc.connectionState === "closed") {
+          setIsWebRTCConnected(false);
+        }
       });
       dc.addEventListener("message", (e) => {
         try {
@@ -967,6 +976,9 @@ function RoundPageContent({ id, roundId }) {
                     processed dynamically by IBS AI. Ensure your face is clearly
                     visible.
                   </p>
+                  <p className="text-sm font-semibold text-rose-500 mt-3 bg-rose-50 inline-block px-3 py-1 rounded-full border border-rose-100">
+                    Once connected, say "Hello" to start!
+                  </p>
                 </div>
               </div>
             )}
@@ -989,8 +1001,8 @@ function RoundPageContent({ id, roundId }) {
                   </div>
                   {/* Bottom-left Status indicator */}
                   <div className="absolute bottom-3 left-3 bg-black/60 text-white text-[10px] font-semibold px-2 py-1 rounded-md flex items-center gap-1.5 backdrop-blur-xs border border-white/10">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 block" />
-                    Camera Active
+                    <span className={`w-1.5 h-1.5 rounded-full ${isWebRTCConnected ? 'bg-emerald-500 animate-pulse' : 'bg-yellow-500 animate-pulse'} block`} />
+                    {isWebRTCConnected ? 'AI Connected' : 'Connecting to AI...'}
                   </div>
                   {/* Bottom-right audio level visualizer overlay */}
                   <div className="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] font-semibold px-2 py-1 rounded-md flex items-center gap-1 backdrop-blur-xs border border-white/10">
