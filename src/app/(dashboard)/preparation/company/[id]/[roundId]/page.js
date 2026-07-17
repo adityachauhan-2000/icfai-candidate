@@ -157,6 +157,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const pcRef = useRef(null);
+  const aiAudioRef = useRef(null);
 
   // State declaration (we keep state local and persist to localStorage on save/exit)
   const [timeLeft, setTimeLeft] = useState(1800);
@@ -497,6 +498,32 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
     setAudioPhase("recording");
     try {
       sendTerminalLog("🌐 Initializing WebRTC Session...");
+
+      // FIX 1: Pre-create Audio element inside click handler so Safari
+      // associates it with a user gesture (autoplay policy workaround).
+      // We play a silent buffer to "unlock" audio, then reuse this element
+      // for the AI voice stream in ontrack.
+      const aiAudio = new Audio();
+      aiAudio.setAttribute('playsinline', 'true');
+      aiAudioRef.current = aiAudio;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const tmpCtx = new AudioCtx();
+        const silentBuffer = tmpCtx.createBuffer(1, 1, 22050);
+        const silentSrc = tmpCtx.createBufferSource();
+        silentSrc.buffer = silentBuffer;
+        silentSrc.connect(tmpCtx.destination);
+        silentSrc.start();
+        // Also unlock the Audio element with a silent play
+        aiAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+        await aiAudio.play().catch(() => {});
+        aiAudio.pause();
+        aiAudio.src = '';
+        sendTerminalLog("🔊 Safari audio context unlocked via user gesture.");
+      } catch (audioUnlockErr) {
+        sendTerminalLog(`⚠️ Audio unlock attempt: ${audioUnlockErr.message}`);
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       streamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
@@ -504,20 +531,27 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
       // Record locally for analysis transcript and video
       recordedChunksRef.current = [];
 
-      let videoMimeType = 'video/webm';
+      // FIX 3: Better MediaRecorder MIME type detection for Safari.
+      // Safari doesn't support video/webm at all. Prefer video/mp4 on Safari.
+      let videoMimeType = undefined; // Let browser choose if nothing is supported
+      const mimePreferences = [
+        'video/mp4',
+        'video/webm;codecs=vp9',
+        'video/webm;codecs=vp8',
+        'video/webm',
+      ];
       if (typeof MediaRecorder.isTypeSupported === 'function') {
-        if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
-          videoMimeType = 'video/webm;codecs=vp9';
-        } else if (MediaRecorder.isTypeSupported('video/webm')) {
-          videoMimeType = 'video/webm';
-        } else if (MediaRecorder.isTypeSupported('video/mp4')) {
-          videoMimeType = 'video/mp4';
-        } else if (MediaRecorder.isTypeSupported('video/quicktime')) {
-          videoMimeType = 'video/quicktime';
+        for (const mime of mimePreferences) {
+          if (MediaRecorder.isTypeSupported(mime)) {
+            videoMimeType = mime;
+            break;
+          }
         }
       }
+      sendTerminalLog(`🎥 MediaRecorder using MIME: ${videoMimeType || 'browser default'}`);
 
-      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: videoMimeType });
+      const recorderOptions = videoMimeType ? { mimeType: videoMimeType } : {};
+      mediaRecorderRef.current = new MediaRecorder(stream, recorderOptions);
       mediaRecorderRef.current.ondataavailable = (e) => {
         if (e.data.size > 0) recordedChunksRef.current.push(e.data);
       };
@@ -538,7 +572,10 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
 
       if (!client_secret) throw new Error("No client secret in response");
 
-      const pc = new RTCPeerConnection();
+      // FIX 4: Add STUN server for reliable ICE candidate gathering on Safari
+      const pc = new RTCPeerConnection({
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+      });
       pcRef.current = pc;
 
       const dc = pc.createDataChannel("oai-events");
@@ -582,10 +619,21 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
         });
       };
 
+      // FIX 1 (continued): Reuse the pre-unlocked Audio element for AI voice
       pc.ontrack = (e) => {
-        const aiAudio = new Audio();
-        aiAudio.srcObject = e.streams[0];
-        aiAudio.play();
+        const audio = aiAudioRef.current || new Audio();
+        audio.srcObject = e.streams[0];
+        audio.play().catch((playErr) => {
+          sendTerminalLog(`⚠️ AI audio play failed: ${playErr.message}. Retrying...`);
+          // Retry on user interaction as a fallback
+          const resumeAudio = () => {
+            audio.play().catch(() => {});
+            document.removeEventListener('click', resumeAudio);
+            document.removeEventListener('touchstart', resumeAudio);
+          };
+          document.addEventListener('click', resumeAudio, { once: true });
+          document.addEventListener('touchstart', resumeAudio, { once: true });
+        });
       };
 
       // Only add audio tracks to WebRTC session (KiteFishAI realtime session is audio-only)
@@ -594,7 +642,24 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
       sendTerminalLog("📝 Creating WebRTC Offer...");
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      sendTerminalLog("📡 Local Description set. Sending SDP to backend proxy...");
+
+      // FIX 2: Wait for ICE gathering to complete before sending SDP.
+      // Safari often hasn't gathered all candidates when setLocalDescription resolves.
+      if (pc.iceGatheringState !== 'complete') {
+        await new Promise((resolve) => {
+          const timeout = setTimeout(() => {
+            sendTerminalLog("⚠️ ICE gathering timed out after 5s, proceeding with available candidates.");
+            resolve();
+          }, 5000);
+          pc.addEventListener('icegatheringstatechange', () => {
+            if (pc.iceGatheringState === 'complete') {
+              clearTimeout(timeout);
+              resolve();
+            }
+          });
+        });
+      }
+      sendTerminalLog(`📡 ICE gathering complete (state: ${pc.iceGatheringState}). Sending SDP to backend proxy...`);
 
       const sdpResp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/webrtc/sdp`, {
         method: "POST",
@@ -603,7 +668,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
           "Content-Type": "application/sdp"
         },
         credentials: "include",
-        body: offer.sdp
+        body: pc.localDescription.sdp
       });
       const answerSdp = await sdpResp.text();
       await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
