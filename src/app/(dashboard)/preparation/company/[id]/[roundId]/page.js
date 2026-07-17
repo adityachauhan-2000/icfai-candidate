@@ -499,10 +499,18 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
     try {
       sendTerminalLog("🌐 Initializing WebRTC Session...");
 
-      // FIX 1: Pre-create Audio element inside click handler so Safari
-      // associates it with a user gesture (autoplay policy workaround).
-      // We play a silent buffer to "unlock" audio, then reuse this element
-      // for the AI voice stream in ontrack.
+      // IMPORTANT: Call getUserMedia FIRST, immediately on click.
+      // Safari's user-gesture context expires after any async operation,
+      // so this must be the very first await in the handler.
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      streamRef.current = stream;
+      if (videoRef.current) videoRef.current.srcObject = stream;
+      sendTerminalLog("📷 Camera & Mic access granted.");
+
+      // FIX 1: Now unlock audio playback for Safari.
+      // We already have user gesture context from getUserMedia grant,
+      // so we can pre-create an Audio element and play a silent buffer
+      // to unlock autoplay for the AI voice stream.
       const aiAudio = new Audio();
       aiAudio.setAttribute('playsinline', 'true');
       aiAudioRef.current = aiAudio;
@@ -519,14 +527,10 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
         await aiAudio.play().catch(() => {});
         aiAudio.pause();
         aiAudio.src = '';
-        sendTerminalLog("🔊 Safari audio context unlocked via user gesture.");
+        sendTerminalLog("🔊 Safari audio context unlocked.");
       } catch (audioUnlockErr) {
         sendTerminalLog(`⚠️ Audio unlock attempt: ${audioUnlockErr.message}`);
       }
-
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      streamRef.current = stream;
-      if (videoRef.current) videoRef.current.srcObject = stream;
 
       // Record locally for analysis transcript and video
       recordedChunksRef.current = [];
