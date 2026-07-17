@@ -27,6 +27,10 @@ export default function CandidateLogin() {
       });
 
       if (res.ok) {
+        const data = await res.json();
+        if (data.token) {
+          localStorage.setItem("student_token", data.token);
+        }
         // Redirect to dashboard
         router.push("/preparation");
       } else {

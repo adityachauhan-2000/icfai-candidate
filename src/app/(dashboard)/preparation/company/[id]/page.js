@@ -34,7 +34,11 @@ export default function CompanyLandingPage({ params }) {
     }
     async function fetchSessions() {
       try {
+        const token = localStorage.getItem("student_token");
+        const headers = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/sessions/${id}`, {
+          headers,
           credentials: "include"
         });
         if (res.ok) {

@@ -12,10 +12,10 @@ export const TABS = [
   },
   {
     id: "gd",
-    label: "GD",
+    label: "Topic Preparation",
     icon: "🗣️",
     color: "#1d4ed8",
-    desc: "AI-moderated group discussion simulator",
+    desc: "AI-moderated topic discussion simulator",
     href: "/preparation/gd",
   },
   {

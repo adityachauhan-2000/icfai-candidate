@@ -8,7 +8,7 @@ import PrepAnalysisReport from "@/components/PrepAnalysisReport";
 // Helper to get Blob from IndexedDB
 const getBlobFromDB = (key) => {
   return new Promise((resolve) => {
-    const req = indexedDB.open("InterviewDB", 2);
+    const req = indexedDB.open("InterviewDB", 3);
     req.onsuccess = (e) => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains("blobs")) return resolve(null);
@@ -22,8 +22,7 @@ const getBlobFromDB = (key) => {
   });
 };
 
-export default function AnalysisPage({ params }) {
-  const { id } = use(params);
+export function AnalysisPageContent({ id, basePath = `/preparation/company/${id}/analysis`, isolatedRoundType = null }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session");
@@ -36,8 +35,14 @@ export default function AnalysisPage({ params }) {
     async function fetchCompany() {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/${id}`);
-        if (res.ok) setCompany(await res.json());
-      } catch (e) { }
+        if (res.ok) {
+          setCompany(await res.json());
+        } else if (id === "999") {
+          setCompany({ id: 999, name: "Self Preparation" });
+        }
+      } catch (e) {
+        if (id === "999") setCompany({ id: 999, name: "Self Preparation" });
+      }
     }
     fetchCompany();
   }, [id]);
@@ -77,7 +82,11 @@ export default function AnalysisPage({ params }) {
           } catch (e) {
             console.error("Error fetching latest session", e);
           }
-          router.replace(`/preparation/company/${id}`);
+          if (basePath.includes("analysis")) {
+            router.replace(`/preparation/company/${id}`);
+          } else {
+            setLoading(false); // Let it handle gracefully if no session
+          }
           return;
         }
 
@@ -106,7 +115,11 @@ export default function AnalysisPage({ params }) {
 
         let activeStudentId = 1;
         try {
+          const token = localStorage.getItem("student_token");
+          const headers = {};
+          if (token) headers["Authorization"] = `Bearer ${token}`;
           const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
+            headers,
             credentials: "include"
           });
           if (stRes.ok) {
@@ -126,8 +139,12 @@ export default function AnalysisPage({ params }) {
         if (gdAudioBlob) formData.append("gd_audio", gdAudioBlob, "gd_audio.webm");
         if (interviewVideoBlob) formData.append("interview_video", interviewVideoBlob, "interview_video.webm");
 
+        const token = localStorage.getItem("student_token");
+        const headers = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/analyze-interview`, {
           method: "POST",
+          headers,
           credentials: "include",
           body: formData,
         });
@@ -141,7 +158,7 @@ export default function AnalysisPage({ params }) {
             localStorage.removeItem(`skipped_${id}`);
           } catch (e) { }
 
-          router.replace(`/preparation/company/${id}/analysis?session=${data.id}`);
+          router.replace(`${basePath}?session=${data.id}`);
         } else {
           setAnalysisResult({ error: "Failed to fetch analysis" });
         }
@@ -153,7 +170,7 @@ export default function AnalysisPage({ params }) {
       }
     }
     processAnalysis();
-  }, [id, sessionId, router]);
+  }, [id, sessionId, router, basePath]);
 
   const handleRestart = () => {
     try {
@@ -181,10 +198,10 @@ export default function AnalysisPage({ params }) {
         </div>
 
         <h3 className="mt-8 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-zinc-800 to-zinc-500 animate-pulse">
-          Analyzing Your Interview
+          Analyzing Your Session
         </h3>
         <p className="mt-3 text-sm text-zinc-500 max-w-sm text-center leading-relaxed">
-          Our AI is evaluating your responses, processing speech patterns, and generating personalized feedback. This usually takes a minute.
+          Our AI is evaluating your responses, processing data, and generating personalized feedback. This usually takes a minute.
         </p>
 
         <div className="mt-8 w-64 h-1.5 bg-zinc-100 rounded-full overflow-hidden">
@@ -195,12 +212,18 @@ export default function AnalysisPage({ params }) {
   }
 
   return (
-    <div className="py-4">
+    <div className="py-4 animate-fade-in">
       <PrepAnalysisReport
         company={company}
         analysisResult={analysisResult}
         onRestart={handleRestart}
+        isolatedRoundType={isolatedRoundType}
       />
     </div>
   );
+}
+
+export default function AnalysisPage({ params }) {
+  const { id } = use(params);
+  return <AnalysisPageContent id={id} />;
 }

@@ -48,7 +48,7 @@ export default function PlacementPrepPage() {
           className="text-2xl font-bold mb-1"
           style={{ color: "var(--text-primary)" }}
         >
-          Company Placement Prep
+          Demo Company Placement Prep
         </h1>
         <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
           Select a company to practice their exact custom recruitment rounds under real timed conditions.

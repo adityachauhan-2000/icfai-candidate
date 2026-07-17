@@ -7,6 +7,7 @@ export default function PrepAnalysisReport({
   company,
   analysisResult,
   onRestart,
+  isolatedRoundType,
 }) {
   if (!analysisResult) {
     return <div className="text-center py-10">No analysis data available.</div>;
@@ -39,7 +40,7 @@ export default function PrepAnalysisReport({
   const grammar = report.grammar_pronunciation_notes || "No speech notes.";
 
   const companyName = company?.name || "Company";
-  const iconSrc = company?.icon || null;
+  const iconSrc = company?.id === 999 ? null : (company?.icon || null);
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto animate-fade-in pb-20">
@@ -60,7 +61,7 @@ export default function PrepAnalysisReport({
                 </div>
             ) : (
                 <span className="text-xs uppercase tracking-widest font-bold px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-600">
-                Diagnostic Report
+                Self Practice Report
                 </span>
             )}
             <span
@@ -75,7 +76,7 @@ export default function PrepAnalysisReport({
             className="text-3xl font-black tracking-tight"
             style={{ color: "var(--text-primary)" }}
           >
-            {companyName} Interview Analysis
+            {company?.id === 999 ? "Self Preparation Report" : `${companyName} Interview Analysis`}
           </h1>
           <p
             className="text-sm mt-3 leading-relaxed font-medium"
@@ -102,73 +103,76 @@ export default function PrepAnalysisReport({
         <div className="lg:col-span-2 space-y-6">
             
             {/* ROUND 1: APTITUDE ASSESSMENT */}
-            <div className="p-7 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-5 relative overflow-hidden group hover:border-zinc-300 transition-all">
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
-                <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
-                        Round 1: Aptitude Assessment
-                    </h2>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100">
-                        <p className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1">Aptitude Score</p>
-                        <p className="text-2xl font-black text-emerald-950">{aptitude_score?.correct || 0} / 60</p>
-                        <p className="text-xs text-emerald-700 mt-1">Each correct answer is worth 1 point</p>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
-                        <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">Questions Attempted</p>
-                        <p className="text-2xl font-black text-zinc-800">{aptitude_score?.attempted || 0} / 60</p>
-                        <p className="text-xs text-zinc-500 mt-1">Accuracy: {aptitude_score?.attempted > 0 ? Math.round((aptitude_score.correct / aptitude_score.attempted) * 100) : 0}%</p>
-                    </div>
-                </div>
-            </div>
+            {(!isolatedRoundType || isolatedRoundType === "aptitude") && (
+              <div className="p-7 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-5 relative overflow-hidden group hover:border-zinc-300 transition-all">
+                  <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+                          Round 1: Aptitude Assessment
+                      </h2>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className={`p-4 rounded-2xl border ${(aptitude_score?.correct || 0) <= 10 ? 'bg-red-50/50 border-red-100' : 'bg-emerald-50/50 border-emerald-100'}`}>
+                          <p className={`text-xs font-bold uppercase tracking-wider mb-1 ${(aptitude_score?.correct || 0) <= 10 ? 'text-red-800' : 'text-emerald-800'}`}>Aptitude Score</p>
+                          <p className={`text-2xl font-black ${(aptitude_score?.correct || 0) <= 10 ? 'text-red-950' : 'text-emerald-950'}`}>{aptitude_score?.correct || 0} / 60</p>
+                          <p className={`text-xs mt-1 ${(aptitude_score?.correct || 0) <= 10 ? 'text-red-700' : 'text-emerald-700'}`}>Each correct answer is worth 1 point</p>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
+                          <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">Questions Attempted</p>
+                          <p className="text-2xl font-black text-zinc-800">{aptitude_score?.attempted || 0} / 60</p>
+                          <p className="text-xs text-zinc-500 mt-1">Accuracy: {aptitude_score?.attempted > 0 ? Math.round((aptitude_score.correct / aptitude_score.attempted) * 100) : 0}%</p>
+                      </div>
+                  </div>
+              </div>
+            )}
             
             {/* ROUND 2: GD */}
-            <div className="p-7 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-5 relative overflow-hidden group hover:border-zinc-300 transition-all">
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div>
-                <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
-                        Round 2: Group Discussion
-                    </h2>
-                </div>
-                
-                <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-100">
-                    <p className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Topic Assigned</p>
-                    <p className="text-sm font-medium text-blue-950">{gdQuestion}</p>
-                </div>
-                
-                <div>
-                    <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Performance Feedback</p>
-                    <p className="text-sm text-zinc-700 leading-relaxed bg-zinc-50 p-4 rounded-2xl border border-zinc-100">{gdFeedback}</p>
-                </div>
-            </div>
+            {(!isolatedRoundType || isolatedRoundType === "gd") && (
+              <div className="p-7 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-5 relative overflow-hidden group hover:border-zinc-300 transition-all">
+                  <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+                          Round 2: Topic Preparation
+                      </h2>
+                  </div>
+                  
+                  <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-100">
+                      <p className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Topic Assigned</p>
+                      <p className="text-sm font-medium text-blue-950">{gdQuestion}</p>
+                  </div>
+                  
+                  <div>
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Performance Feedback</p>
+                      <p className="text-sm text-zinc-700 leading-relaxed bg-zinc-50 p-4 rounded-2xl border border-zinc-100">{gdFeedback}</p>
+                  </div>
+              </div>
+            )}
 
             {/* ROUND 3: INTERVIEW */}
-            <div className="p-7 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-5 relative overflow-hidden group hover:border-zinc-300 transition-all">
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-purple-500"></div>
-                <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
-                        Round 3: Personal Interview
-                    </h2>
-                </div>
-                
+            {(!isolatedRoundType || isolatedRoundType === "interview" || isolatedRoundType === "hr") && (
+              <div className="p-7 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-5 relative overflow-hidden group hover:border-zinc-300 transition-all">
+                  <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+                          Round 3: Personal Interview
+                      </h2>
+                  </div>
+                  
 
-                <div>
-                    <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Response Evaluation</p>
-                    <p className="text-sm text-zinc-700 leading-relaxed bg-zinc-50 p-4 rounded-2xl border border-zinc-100">{intFeedback}</p>
-                </div>
+                  <div>
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Response Evaluation</p>
+                      <p className="text-sm text-zinc-700 leading-relaxed bg-zinc-50 p-4 rounded-2xl border border-zinc-100">{intFeedback}</p>
+                  </div>
 
-                <div className="grid grid-cols-1 gap-4">
-                    <div>
-                        <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Grammar & Fluency</p>
-                        <p className="text-sm text-zinc-700 leading-relaxed italic border-l-2 border-purple-300 pl-4 mb-4">{grammar}</p>
-                        
-                        <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Visual & Behavior Analysis</p>
-                        <p className="text-sm text-zinc-700 leading-relaxed italic border-l-2 border-blue-300 pl-4">{posture}</p>
-                    </div>
-                </div>
-            </div>
+                  <div className="grid grid-cols-1 gap-4">
+                      <div>
+                          <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Grammar & Fluency</p>
+                          <p className="text-sm text-zinc-700 leading-relaxed italic border-l-2 border-purple-300 pl-4 mb-4">{grammar}</p>
+                          
+                          <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Visual & Behavior Analysis</p>
+                          <p className="text-sm text-zinc-700 leading-relaxed italic border-l-2 border-blue-300 pl-4">{posture}</p>
+                      </div>
+                  </div>
+              </div>
+            )}
             
 
         </div>
