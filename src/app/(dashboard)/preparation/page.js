@@ -109,7 +109,7 @@ export default function PreparationPage() {
             </div>
           </Link>
 
-          {/* Card 2: Topic Preparation */}
+          {/* Card 2: Audio Preparation */}
           <Link
             href="/preparation/gd"
             target="_blank"
@@ -126,7 +126,7 @@ export default function PreparationPage() {
             </div>
             <div>
               <h3 className="text-base font-bold text-zinc-900 transition-colors">
-                Topic Preparation
+                Audio Preparation
               </h3>
               <p className="text-xs text-zinc-500 mt-1">
                 10 minutes

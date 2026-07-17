@@ -69,7 +69,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
               description: "Self Practice Mode",
               rounds: [
                 { id: 14, type: "aptitude", title: "Aptitude Test", order_index: 0 },
-                { id: 15, type: "gd", title: "Topic Preparation", order_index: 1 },
+                { id: 15, type: "gd", title: "Audio Preparation", order_index: 1 },
                 { id: 16, type: "interview", title: "Personal Interview", order_index: 2 }
               ]
             };
@@ -135,7 +135,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
               setAptitudeQuestions(parsedQuestions);
             }
           } else if (currentRoundData.type === "gd" && progId) {
-            setTimeLeft(600); // 10 minutes for Topic Preparation
+            setTimeLeft(600); // 10 minutes for Audio Preparation
             const gdRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/gd-questions/random?program_id=${progId}`);
             if (gdRes.ok) setGdQuestion(await gdRes.json());
           } else if ((currentRoundData.type === "interview" || currentRoundData.type === "hr") && progId) {
@@ -348,16 +348,16 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
   const saveStateAndNavigate = (nextAnswers, nextSkipped) => {
     // Stop WebRTC and recording if active
     if (pcRef.current) {
-      try { pcRef.current.close(); } catch (e) {}
+      try { pcRef.current.close(); } catch (e) { }
       pcRef.current = null;
     }
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      try { mediaRecorderRef.current.stop(); } catch (e) {}
+      try { mediaRecorderRef.current.stop(); } catch (e) { }
     }
     if (streamRef.current) {
       try {
         streamRef.current.getTracks().forEach(track => track.stop());
-      } catch (e) {}
+      } catch (e) { }
       streamRef.current = null;
     }
 
@@ -503,7 +503,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
 
       // Record locally for analysis transcript and video
       recordedChunksRef.current = [];
-      
+
       let videoMimeType = 'video/webm';
       if (typeof MediaRecorder.isTypeSupported === 'function') {
         if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
@@ -516,7 +516,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
           videoMimeType = 'video/quicktime';
         }
       }
-      
+
       mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: videoMimeType });
       mediaRecorderRef.current.ondataavailable = (e) => {
         if (e.data.size > 0) recordedChunksRef.current.push(e.data);
@@ -663,7 +663,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
       streamRef.current = stream;
 
       recordedChunksRef.current = [];
-      
+
       let audioMimeType = 'audio/webm';
       if (typeof MediaRecorder.isTypeSupported === 'function') {
         if (MediaRecorder.isTypeSupported('audio/webm')) {
@@ -674,7 +674,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
           audioMimeType = 'audio/aac';
         }
       }
-      
+
       mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: audioMimeType });
       mediaRecorderRef.current.ondataavailable = (e) => {
         if (e.data.size > 0) recordedChunksRef.current.push(e.data);
@@ -966,7 +966,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
                     </button>
                     {gdQuestion && (
                       <div className="mt-6 p-4 bg-zinc-100 border border-zinc-200 rounded-xl text-left w-full max-w-md mx-auto">
-                        <p className="text-xs font-bold text-zinc-500 mb-1 uppercase tracking-wider">Topic Preparation</p>
+                        <p className="text-xs font-bold text-zinc-500 mb-1 uppercase tracking-wider">Audio Preparation</p>
                         <p className="text-sm font-semibold text-zinc-800">{gdQuestion.question_text}</p>
                       </div>
                     )}
@@ -1012,7 +1012,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
 
                   {gdQuestion && (
                     <div className="mt-4 p-4 bg-zinc-100 border border-zinc-200 rounded-xl text-center w-full max-w-md">
-                      <p className="text-xs font-bold text-zinc-500 mb-1 uppercase tracking-wider">Topic Preparation</p>
+                      <p className="text-xs font-bold text-zinc-500 mb-1 uppercase tracking-wider">Audio Preparation</p>
                       <p className="text-sm font-semibold text-zinc-800">{gdQuestion.question_text}</p>
                     </div>
                   )}
@@ -1158,7 +1158,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
                   </p>
                 </div>
 
-               
+
 
 
               </div>

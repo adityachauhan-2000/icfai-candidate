@@ -29,7 +29,7 @@ export default function GDPage() {
   if (!roundId) {
     return (
       <div className="p-10 text-center text-sm text-zinc-500 font-semibold">
-        Loading Topic Preparation...
+        Loading Audio Preparation...
       </div>
     );
   }
@@ -38,7 +38,7 @@ export default function GDPage() {
     <Suspense
       fallback={
         <div className="p-10 text-center text-sm text-zinc-500">
-          Loading Topic Preparation...
+          Loading Audio Preparation...
         </div>
       }
     >

@@ -73,7 +73,7 @@ export const COMPANY_CONFIGS = {
       },
       {
         id: "gd",
-        label: "Topic Preparation",
+        label: "Audio Preparation",
         timeLimit: 1800,
         type: "gd",
         description:
