@@ -1212,7 +1212,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
         )}
 
         {/* Navigation Action Panel (Only shown during active recording phases for Interview) */}
-        {((currentRound?.type === "interview" || currentRound?.type === "hr") && audioPhase === "recording") && (
+        {/* {((currentRound?.type === "interview" || currentRound?.type === "hr") && audioPhase === "recording") && (
           <div
             className="flex justify-end items-center pt-4 border-t animate-fade-in"
             style={{ borderColor: "var(--border)" }}
@@ -1247,7 +1247,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
               </button>
             </div>
           </div>
-        )}
+        )} */}
 
       </div>
     </div>
