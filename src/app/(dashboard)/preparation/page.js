@@ -87,7 +87,6 @@ export default function PreparationPage() {
           {/* Card 1: Aptitude */}
           <Link
             href="/preparation/aptitude"
-            target="_blank"
             className="p-6 rounded-3xl border bg-white flex flex-col justify-between space-y-4 hover:border-zinc-300 transition-all group"
             style={{ borderColor: "var(--border)" }}
           >
@@ -112,7 +111,6 @@ export default function PreparationPage() {
           {/* Card 2: Audio Preparation */}
           <Link
             href="/preparation/gd"
-            target="_blank"
             className="p-6 rounded-3xl border bg-white flex flex-col justify-between space-y-4 hover:border-zinc-300 transition-all group"
             style={{ borderColor: "var(--border)" }}
           >
@@ -137,7 +135,6 @@ export default function PreparationPage() {
           {/* Card 3: Interview */}
           <Link
             href="/preparation/interview"
-            target="_blank"
             className="p-6 rounded-3xl border bg-white flex flex-col justify-between space-y-4 hover:border-zinc-300 transition-all group"
             style={{ borderColor: "var(--border)" }}
           >

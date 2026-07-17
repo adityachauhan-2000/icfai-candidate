@@ -425,7 +425,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
       // All questions complete, store stringified results object
       newAnswers[roundId] = JSON.stringify({ answers: updatedAptAnswers, score });
     } else if (currentRound?.type === "gd") {
-      newAnswers[roundId] = JSON.stringify({ type: "gd", question: gdQuestion?.question_text || "No question loaded", status: "Audio GD contribution saved" });
+      newAnswers[roundId] = JSON.stringify({ type: "gd", question: gdQuestion?.question_text || "No question loaded", status: "Audio Preparation contribution saved" });
     } else {
       newAnswers[roundId] = JSON.stringify({ type: "interview", question: "Dynamic AI Interview", status: "AI Audio Response recorded successfully" });
     }
@@ -524,7 +524,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
         silentSrc.start();
         // Also unlock the Audio element with a silent play
         aiAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-        await aiAudio.play().catch(() => {});
+        await aiAudio.play().catch(() => { });
         aiAudio.pause();
         aiAudio.src = '';
         sendTerminalLog("🔊 Safari audio context unlocked.");
@@ -631,7 +631,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
           sendTerminalLog(`⚠️ AI audio play failed: ${playErr.message}. Retrying...`);
           // Retry on user interaction as a fallback
           const resumeAudio = () => {
-            audio.play().catch(() => {});
+            audio.play().catch(() => { });
             document.removeEventListener('click', resumeAudio);
             document.removeEventListener('touchstart', resumeAudio);
           };
@@ -772,7 +772,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
     }
 
     setAnswers((prev) => {
-      const nextAnswers = { ...prev, [roundId]: JSON.stringify({ type: "gd", question: gdQuestion?.question_text || "No question loaded", status: "Audio GD contribution saved" }) };
+      const nextAnswers = { ...prev, [roundId]: JSON.stringify({ type: "gd", question: gdQuestion?.question_text || "No question loaded", status: "Audio Preparation contribution saved" }) };
       try {
         localStorage.setItem(`answers_${id}`, JSON.stringify(nextAnswers));
       } catch (e) {
@@ -1023,7 +1023,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
                   </div>
                   <div>
                     <h3 className="text-base font-bold text-zinc-900">
-                      Start AI Audio GD
+                      Start AI Audio Preparation
                     </h3>
 
                     <button
