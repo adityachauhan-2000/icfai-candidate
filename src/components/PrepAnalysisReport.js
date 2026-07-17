@@ -101,6 +101,29 @@ export default function PrepAnalysisReport({
         {/* Main Content Column */}
         <div className="lg:col-span-2 space-y-6">
             
+            {/* ROUND 1: APTITUDE ASSESSMENT */}
+            <div className="p-7 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-5 relative overflow-hidden group hover:border-zinc-300 transition-all">
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+                        Round 1: Aptitude Assessment
+                    </h2>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100">
+                        <p className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1">Aptitude Score</p>
+                        <p className="text-2xl font-black text-emerald-950">{aptitude_score?.correct || 0} / 60</p>
+                        <p className="text-xs text-emerald-700 mt-1">Each correct answer is worth 1 point</p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
+                        <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">Questions Attempted</p>
+                        <p className="text-2xl font-black text-zinc-800">{aptitude_score?.attempted || 0} / 60</p>
+                        <p className="text-xs text-zinc-500 mt-1">Accuracy: {aptitude_score?.attempted > 0 ? Math.round((aptitude_score.correct / aptitude_score.attempted) * 100) : 0}%</p>
+                    </div>
+                </div>
+            </div>
+            
             {/* ROUND 2: GD */}
             <div className="p-7 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-5 relative overflow-hidden group hover:border-zinc-300 transition-all">
                 <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div>
