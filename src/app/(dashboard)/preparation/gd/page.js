@@ -9,7 +9,7 @@ export default function GDPage() {
   useEffect(() => {
     async function getGdRoundId() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/999`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/companies/999`);
         if (res.ok) {
           const company = await res.json();
           const gdRound = company.rounds?.find(r => r.type === "gd");

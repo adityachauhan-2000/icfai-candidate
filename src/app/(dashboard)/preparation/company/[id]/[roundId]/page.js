@@ -34,7 +34,7 @@ const saveBlobToDB = (key, blob) => {
 
 const sendTerminalLog = (message) => {
   console.log(message);
-  fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/log`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/log`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message })
@@ -59,7 +59,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
   useEffect(() => {
     async function fetchCompanyAndQuestions() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/companies/${id}`);
         let data;
         if (!res.ok) {
           if (id === "999") {
@@ -90,7 +90,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
           const token = localStorage.getItem("student_token");
           const headers = {};
           if (token) headers["Authorization"] = `Bearer ${token}`;
-          const sessRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/sessions/${id}`, {
+          const sessRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/sessions/${id}`, {
             headers,
             credentials: "include"
           });
@@ -107,7 +107,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
           const token = localStorage.getItem("student_token");
           const headers = {};
           if (token) headers["Authorization"] = `Bearer ${token}`;
-          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
+          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/auth/student/me`, {
             headers,
             credentials: "include"
           });
@@ -123,7 +123,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
         if (currentRoundData) {
           if (currentRoundData.type === "aptitude") {
             setTimeLeft(3600); // 60 minutes for Aptitude
-            const qRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/rounds/${roundId}/questions?t=${Date.now()}`);
+            const qRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/rounds/${roundId}/questions?t=${Date.now()}`);
             if (qRes.ok) {
               const qData = await qRes.json();
               const parsedQuestions = qData.map(q => {
@@ -136,11 +136,11 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
             }
           } else if (currentRoundData.type === "gd" && progId) {
             setTimeLeft(600); // 10 minutes for Audio Preparation
-            const gdRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/gd-questions/random?program_id=${progId}`);
+            const gdRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/gd-questions/random?program_id=${progId}`);
             if (gdRes.ok) setGdQuestion(await gdRes.json());
           } else if ((currentRoundData.type === "interview" || currentRoundData.type === "hr") && progId) {
             setTimeLeft(1200); // 20 minutes for Interview
-            const intRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/interview-questions/random?program_id=${progId}`);
+            const intRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/interview-questions/random?program_id=${progId}`);
             if (intRes.ok) setInterviewQuestion(await intRes.json());
           }
         }
@@ -499,18 +499,9 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
     try {
       sendTerminalLog("🌐 Initializing WebRTC Session...");
 
-      // IMPORTANT: Call getUserMedia FIRST, immediately on click.
-      // Safari's user-gesture context expires after any async operation,
-      // so this must be the very first await in the handler.
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      streamRef.current = stream;
-      if (videoRef.current) videoRef.current.srcObject = stream;
-      sendTerminalLog("📷 Camera & Mic access granted.");
-
-      // FIX 1: Now unlock audio playback for Safari.
-      // We already have user gesture context from getUserMedia grant,
-      // so we can pre-create an Audio element and play a silent buffer
-      // to unlock autoplay for the AI voice stream.
+      // FIX 1: Unlock audio playback for Safari FIRST.
+      // Safari requires audio unlocking to happen in the exact synchronous call stack 
+      // of the click handler. Awaiting getUserMedia first breaks the user gesture!
       const aiAudio = new Audio();
       aiAudio.setAttribute('playsinline', 'true');
       aiAudioRef.current = aiAudio;
@@ -522,15 +513,24 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
         silentSrc.buffer = silentBuffer;
         silentSrc.connect(tmpCtx.destination);
         silentSrc.start();
-        // Also unlock the Audio element with a silent play
+
+        // Unlock the Audio element with a silent play immediately
         aiAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-        await aiAudio.play().catch(() => { });
-        aiAudio.pause();
-        aiAudio.src = '';
+        // We do NOT await this because we want to start getUserMedia concurrently
+        aiAudio.play().then(() => {
+          aiAudio.pause();
+          aiAudio.src = '';
+        }).catch(() => { });
         sendTerminalLog("🔊 Safari audio context unlocked.");
       } catch (audioUnlockErr) {
         sendTerminalLog(`⚠️ Audio unlock attempt: ${audioUnlockErr.message}`);
       }
+
+      // Now request camera & mic
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      streamRef.current = stream;
+      if (videoRef.current) videoRef.current.srcObject = stream;
+      sendTerminalLog("📷 Camera & Mic access granted.");
 
       // Record locally for analysis transcript and video
       recordedChunksRef.current = [];
@@ -565,7 +565,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
       const token = localStorage.getItem("student_token");
       const headers = {};
       if (token) headers["Authorization"] = `Bearer ${token}`;
-      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/webrtc/session?round_type=interview`, {
+      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/webrtc/session?round_type=interview`, {
         method: "POST",
         headers,
         credentials: "include"
@@ -665,7 +665,7 @@ export function RoundPageContent({ id, roundId, isolatedMode = false, basePath }
       }
       sendTerminalLog(`📡 ICE gathering complete (state: ${pc.iceGatheringState}). Sending SDP to backend proxy...`);
 
-      const sdpResp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/webrtc/sdp`, {
+      const sdpResp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/webrtc/sdp`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${client_secret}`,

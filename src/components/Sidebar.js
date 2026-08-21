@@ -70,7 +70,7 @@ export default function Sidebar({ user }) {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/logout`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

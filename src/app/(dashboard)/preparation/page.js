@@ -14,7 +14,7 @@ export default function PreparationPage() {
   useEffect(() => {
     async function fetchCompanies() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/companies`);
         if (!res.ok) throw new Error("Failed to load companies");
         const data = await res.json();
         // Exclude the Self Preparation dummy company from the main grid listing
@@ -27,7 +27,7 @@ export default function PreparationPage() {
     }
     async function fetchSelfPrep() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/999`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/companies/999`);
         if (res.ok) {
           setSelfPrepCompany(await res.json());
         }
@@ -40,7 +40,7 @@ export default function PreparationPage() {
         const token = localStorage.getItem("student_token");
         const headers = {};
         if (token) headers["Authorization"] = `Bearer ${token}`;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/all-sessions`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/all-sessions`, {
           headers,
           credentials: "include"
         });

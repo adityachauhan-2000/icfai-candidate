@@ -284,7 +284,7 @@ export default function StudyPlanPage() {
   useEffect(() => {
     const fetchStudyPlan = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/student/me/study-plan`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/student/me/study-plan`, {
           credentials: "include",
         });
         if (res.ok) {
@@ -300,13 +300,13 @@ export default function StudyPlanPage() {
 
     const fetchProgramName = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/auth/student/me`, {
           credentials: "include",
         });
         if (res.ok) {
           const data = await res.json();
           if (data.program_id) {
-            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/programs/${data.program_id}`);
+            const progRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/programs/${data.program_id}`);
             if (progRes.ok) {
               const progData = await progRes.json();
               setProgramName(progData.name);

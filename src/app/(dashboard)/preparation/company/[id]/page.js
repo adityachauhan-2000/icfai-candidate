@@ -16,7 +16,7 @@ export default function CompanyLandingPage({ params }) {
   useEffect(() => {
     async function fetchCompany() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/companies/${id}`);
         if (!res.ok) throw new Error("Company not found");
         const data = await res.json();
 
@@ -37,7 +37,7 @@ export default function CompanyLandingPage({ params }) {
         const token = localStorage.getItem("student_token");
         const headers = {};
         if (token) headers["Authorization"] = `Bearer ${token}`;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/sessions/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/sessions/${id}`, {
           headers,
           credentials: "include"
         });

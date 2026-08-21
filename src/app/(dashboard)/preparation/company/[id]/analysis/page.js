@@ -34,7 +34,7 @@ export function AnalysisPageContent({ id, basePath = `/preparation/company/${id}
   useEffect(() => {
     async function fetchCompany() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/companies/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/companies/${id}`);
         if (res.ok) {
           setCompany(await res.json());
         } else if (id === "999") {
@@ -51,7 +51,7 @@ export function AnalysisPageContent({ id, basePath = `/preparation/company/${id}
     async function processAnalysis() {
       try {
         if (sessionId) {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/sessions/detail/${sessionId}`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/sessions/detail/${sessionId}`, {
             credentials: "include"
           });
           if (res.ok) {
@@ -68,7 +68,7 @@ export function AnalysisPageContent({ id, basePath = `/preparation/company/${id}
         if (!storedAnswersStr) {
           // If no current session answers exist, fetch the latest completed session
           try {
-            const sessionsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/sessions/${id}`, {
+            const sessionsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/sessions/${id}`, {
               credentials: "include"
             });
             if (sessionsRes.ok) {
@@ -118,7 +118,7 @@ export function AnalysisPageContent({ id, basePath = `/preparation/company/${id}
           const token = localStorage.getItem("student_token");
           const headers = {};
           if (token) headers["Authorization"] = `Bearer ${token}`;
-          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/auth/student/me`, {
+          const stRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/auth/student/me`, {
             headers,
             credentials: "include"
           });
@@ -142,7 +142,7 @@ export function AnalysisPageContent({ id, basePath = `/preparation/company/${id}
         const token = localStorage.getItem("student_token");
         const headers = {};
         if (token) headers["Authorization"] = `Bearer ${token}`;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://icfai-backend-production.up.railway.app"}/api/preparation/analyze-interview`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}/api/preparation/analyze-interview`, {
           method: "POST",
           headers,
           credentials: "include",
